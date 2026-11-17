@@ -1,0 +1,55 @@
+name: lifeline
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: lifeline
+      POSTGRES_USER: lifeline
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lifeline}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lifeline -d lifeline"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  routing-service:
+    build: ./services/routing-service
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/lifeline
+      DB_USER: lifeline
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-lifeline}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  core-api:
+    build: ./services/core-api
+    environment:
+      DATABASE_URL: postgres://lifeline:${POSTGRES_PASSWORD:-lifeline}@db:5432/lifeline
+      ROUTING_URL: http://routing-service:8080
+      SIMULATOR: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+      routing-service:
+        condition: service_started
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - core-api
+    ports:
+      - "3000:80"
+
+volumes:
+  pgdata:

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+target/
+.env
+*.log
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.DS_Store
+.idea/
+.vscode/

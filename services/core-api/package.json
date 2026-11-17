@@ -1,0 +1,23 @@
+{
+  "name": "lifeline-core-api",
+  "version": "1.0.0",
+  "description": "Lifeline core API: patients, scheduling, real-time vitals processing, gateway to the routing service",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test \"test/**/*.test.js\"",
+    "simulate:scheduling": "node scripts/simulate-scheduling.js",
+    "loadtest": "node scripts/loadtest.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "pg": "^8.13.1",
+    "ws": "^8.18.0"
+  }
+}
