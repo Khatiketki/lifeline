@@ -1,9 +1,9 @@
-FROM node:20-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-FROM node:20-alpine
+FROM node:24-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 # Amazon RDS CA bundle so TLS to RDS is verified (used when DB_SSL=true).
